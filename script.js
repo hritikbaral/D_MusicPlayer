@@ -1,33 +1,167 @@
+const youtubeInput = document.getElementById("youtubeKey");
+const backendInput = document.getElementById("backendKey");
+////////////////
+API_KEY = localStorage.getItem("youtubeKey");
+/////////////////////
+backendKey = localStorage.getItem("backendKey");
+
+
+youtubeInput.value = localStorage.getItem("youtubeKey") || "";
+backendInput.value = localStorage.getItem("backendKey") || "";
+
+document.getElementById("saveKeys").onclick = () => {
+
+    localStorage.setItem("youtubeKey", youtubeInput.value);
+    localStorage.setItem("backendKey", backendInput.value);
+
+    alert("Keys saved!");
+
+    API_KEY = youtubeInput.value;
+    backendKey = backendInput.value;
+
+};
+
+
 const player = document.getElementById("player");
+let currentIndex = -1;
+let shuffleMode = false;
+let loopMode = false;
 
-function playSong(song) {
+async function playSong(song, index) {
 
-    document.getElementById("nowPlayingText").innerText = song.title;
+    currentIndex = index;
 
     player.pause();
     player.src = "";
 
-    setTimeout(() => {
+    document.getElementById("nowPlayingText").innerText = song.title;
 
-        player.src = song.url;
+    const res = await fetch(song.url);
 
-        player.play().catch(() => { });
+    const data = await res.json();
 
-    }, 100);
+    player.src = data.url;
+    player.load();
+    player.play().catch(() => { });
 
 }
+
+document.getElementById("copyPlaylist").onclick = () => {
+
+    const text = JSON.stringify(playlist, null, 2);
+
+    navigator.clipboard.writeText(text);
+
+    alert("Playlist copied!");
+
+};
+
+document.getElementById("pastePlaylist").onclick = async () => {
+
+    const text = prompt("Paste playlist JSON");
+
+    if (!text) return;
+
+    try {
+
+        const newSongs = JSON.parse(text);
+
+        newSongs.forEach(song => {
+
+            if (!playlist.some(s => s.url === song.url)) {
+                playlist.push(song);
+            }
+
+        });
+
+        localStorage.setItem("playlist", JSON.stringify(playlist));
+
+        renderPlaylist();
+
+    } catch (err) {
+
+        alert("Invalid playlist JSON");
+
+    }
+
+};
+
+
+document.getElementById("nextBtn").onclick = () => {
+
+    if (playlist.length === 0) return;
+
+    if (shuffleMode) {
+
+        const randomIndex = Math.floor(Math.random() * playlist.length);
+
+        playSong(playlist[randomIndex], randomIndex);
+
+    } else {
+
+        currentIndex++;
+
+        if (currentIndex >= playlist.length) {
+
+            currentIndex = 0;
+
+        }
+
+        playSong(playlist[currentIndex], currentIndex);
+
+    }
+
+};
+
+document.getElementById("prevBtn").onclick = () => {
+
+    if (playlist.length === 0) return;
+
+    if (shuffleMode) {
+
+        const randomIndex = Math.floor(Math.random() * playlist.length);
+
+        playSong(playlist[randomIndex], randomIndex);
+
+    } else {
+
+        currentIndex--;
+
+        if (currentIndex < 0) {
+
+            currentIndex = playlist.length - 1;
+
+        }
+
+        playSong(playlist[currentIndex], currentIndex);
+
+    }
+
+};
+
+
+document.getElementById("shuffleToggle").onclick = () => {
+
+    shuffleMode = !shuffleMode;
+
+    document.getElementById("shuffleToggle").innerText =
+        shuffleMode ? "Shuffle: ON" : "Shuffle: OFF";
+
+};
 
 
 
 player.onended = () => {
 
-    let index = playlist.findIndex(s => s.url === player.src);
+    if (loopMode) {
 
-    if (index >= 0 && index < playlist.length - 1) {
+        playSong(playlist[currentIndex], currentIndex);
 
-        playSong(playlist[index + 1]);
+        return;
 
     }
+
+    document.getElementById("nextBtn").click();
 
 };
 
@@ -37,40 +171,6 @@ const playlistUI = document.getElementById("playlist");
 
 let playlist = JSON.parse(localStorage.getItem("playlist")) || [];
 
-// const demoSongs = [
-//     { title: "Song 1", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
-//     { title: "Song 2", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" },
-//     { title: "Song 3", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" }
-// ];
-
-// function showResults() {
-
-//     results.innerHTML = "";
-
-//     demoSongs.forEach(song => {
-
-//         const div = document.createElement("div");
-//         div.className = "song";
-
-//         div.innerHTML = `
-//  ${song.title}
-//  <button class="addBtn">+</button>
-//  `;
-
-//         div.onclick = () => playSong(song);
-
-//         div.querySelector(".addBtn").onclick = (e) => {
-//             e.stopPropagation();
-//             addToPlaylist(song);
-//         };
-
-//         results.appendChild(div);
-
-//     });
-
-// }
-
-const API_KEY = "AIzaSyA2gfj8NsvgoWyuz57vyPIa6WcvnnO7Jgg";
 
 const searchInput = document.getElementById("search");
 
@@ -86,6 +186,11 @@ searchInput.addEventListener("keypress", function (e) {
 
 
 async function searchYoutube(query) {
+
+    if (API_KEY == null || API_KEY === "") {
+        alert("Please enter your YouTube API key");
+        return;
+    }
 
     results.innerHTML = "Searching...";
 
@@ -108,6 +213,8 @@ async function searchYoutube(query) {
 
 
 
+
+
 function displayResults(videos) {
 
     results.innerHTML = "";
@@ -122,7 +229,7 @@ function displayResults(videos) {
 
         const song = {
             title: title,
-            url: `https://YOUR_BACKEND/audio?videoId=${videoId}`
+            url: `http://localhost:3000/audio?videoId=${videoId}&key=${backendKey}`
         };
 
         const div = document.createElement("div");
@@ -135,7 +242,7 @@ function displayResults(videos) {
         <button class="addBtn">+</button>
         `;
 
-        div.onclick = () => playSong(song);
+        div.onclick = () => playSong(song, -1);
 
         div.querySelector(".addBtn").onclick = (e) => {
 
@@ -157,7 +264,7 @@ function addToPlaylist(song) {
 
     if (!playlist.some(s => s.url === song.url)) {
 
-        playlist.push(song);
+        playlist.unshift(song);
 
         localStorage.setItem("playlist", JSON.stringify(playlist));
 
@@ -166,6 +273,7 @@ function addToPlaylist(song) {
     }
 
 }
+
 
 
 function renderPlaylist() {
@@ -179,21 +287,27 @@ function renderPlaylist() {
         li.className = "playlist-item";
 
         li.innerHTML = `
- <span>${song.title}</span>
- <div>
-  <button class="playBtn">▶</button>
-  <button class="deleteBtn">❌</button>
- </div>
- `;
+        <span>${song.title}</span>
+        <div>
+        <button class="playBtn">▶</button>
+        <button class="deleteBtn">❌</button>
+        </div>
+        `;
 
+        // play button
         li.querySelector(".playBtn").onclick = () => {
-            playSong(song);
+            playSong(song, index);
         };
 
+        // delete button
         li.querySelector(".deleteBtn").onclick = () => {
+
             playlist.splice(index, 1);
+
             localStorage.setItem("playlist", JSON.stringify(playlist));
+
             renderPlaylist();
+
         };
 
         playlistUI.appendChild(li);
@@ -203,42 +317,48 @@ function renderPlaylist() {
 }
 
 
-document.getElementById("shuffle").onclick = () => {
+document.getElementById("loopToggle").onclick = () => {
 
-    playlist.sort(() => Math.random() - 0.5);
+    loopMode = !loopMode;
 
-    renderPlaylist();
+    document.getElementById("loopToggle").innerText =
+        loopMode ? "Loop: ON" : "Loop: OFF";
 
 };
-
-showResults();
-renderPlaylist();
-
 
 
 document.getElementById("playAll").onclick = () => {
 
-    if (playlist.length > 0) {
+    if (playlist.length === 0) return;
 
-        playSong(playlist[0]);
+    currentIndex = 0;
 
-    }
+    playSong(playlist[currentIndex], currentIndex);
 
 };
 
-document.getElementById("shuffle").onclick = () => {
 
-    playlist.sort(() => Math.random() - 0.5);
+
+document.addEventListener("DOMContentLoaded", () => {
 
     renderPlaylist();
 
-};
+    document.getElementById("playAll").onclick = () => {
 
-document.getElementById("reset").onclick = () => {
+        if (playlist.length === 0) return;
 
-    playlist = JSON.parse(localStorage.getItem("playlist")) || [];
+        currentIndex = 0;
 
-    renderPlaylist();
+        playSong(playlist[currentIndex], currentIndex);
 
-};
+    };
 
+    // document.getElementById("prevBtn").onclick = prevSong;
+
+    // document.getElementById("nextBtn").onclick = nextSong;
+
+    // document.getElementById("shuffleToggle").onclick = toggleShuffle;
+
+    // document.getElementById("loopToggle").onclick = toggleLoop;
+
+});

@@ -11,7 +11,25 @@
 
 <div class="container">
 
-<h1>My Music</h1>
+<h1>Dino Music Player</h1>
+
+
+
+<div class="keys">
+
+<label>YouTube API Key</label>
+<input id="youtubeKey" placeholder="Enter YouTube API Key">
+
+<label>Backend Key</label>
+<input id="backendKey" placeholder="Enter Backend Key">
+
+<button id="saveKeys">Save Keys</button>
+
+<button id="copyPlaylist">Copy Playlist</button>
+<button id="pastePlaylist">Paste Playlist</button>
+
+</div>
+
 
 <input id="search" placeholder="Search song..."/>
 
@@ -23,12 +41,19 @@
 
 <audio id="player" controls></audio>
 
+<div class="player-controls">
+
+<button id="prevBtn">⏮</button>
+<button id="nextBtn">⏭</button>
+<button id="shuffleToggle">Shuffle: OFF</button>
+<button id="loopToggle">Loop: OFF</button>
+</div>
+
+
 <h2>Playlist</h2>
 
 <div class="playlist-controls">
 <button id="playAll">Play All</button>
-<button id="shuffle">Shuffle</button>
-<button id="reset">Reset</button>
 </div>
 
 <ul id="playlist"></ul>
