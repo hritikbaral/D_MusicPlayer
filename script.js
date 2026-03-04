@@ -36,7 +36,11 @@ async function playSong(song, index) {
 
     document.getElementById("nowPlayingText").innerText = song.title;
 
-    const res = await fetch(song.url);
+    const url =
+        `http://localhost:3000/audio?videoId=${song.videoId}&key=${backendKey}`;
+
+    const res = await fetch(url);
+
 
     const data = await res.json();
 
@@ -68,7 +72,7 @@ document.getElementById("pastePlaylist").onclick = async () => {
 
         newSongs.forEach(song => {
 
-            if (!playlist.some(s => s.url === song.url)) {
+            if (!playlist.some(s => s.videoId === song.videoId)) {
                 playlist.push(song);
             }
 
@@ -229,7 +233,7 @@ function displayResults(videos) {
 
         const song = {
             title: title,
-            url: `http://localhost:3000/audio?videoId=${videoId}&key=${backendKey}`
+            videoId: videoId
         };
 
         const div = document.createElement("div");
@@ -262,7 +266,11 @@ function displayResults(videos) {
 
 function addToPlaylist(song) {
 
-    if (!playlist.some(s => s.url === song.url)) {
+    if (!song.videoId) return;
+
+    const exists = playlist.some(s => s.videoId === song.videoId);
+
+    if (!exists) {
 
         playlist.unshift(song);
 
@@ -273,6 +281,7 @@ function addToPlaylist(song) {
     }
 
 }
+
 
 
 
