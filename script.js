@@ -40,10 +40,7 @@ async function playSong(song, index) {
     const url =
         `${BACKEND_URL}/audio?videoId=${song.videoId}&key=${backendKey}&t=${Date.now()}`;
 
-    const res = await fetch(url);
-    const data = await res.json();
-
-    player.src = data.url;
+    player.src = url;
     player.load();
     //player.play();
     player.play().catch(() => { });
