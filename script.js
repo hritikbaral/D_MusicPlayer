@@ -42,10 +42,44 @@ async function playSong(song, index) {
 
     player.src = url;
     player.load();
+
+    if ("mediaSession" in navigator) {
+
+        navigator.mediaSession.metadata = new MediaMetadata({
+            title: song.title,
+            artist: "YouTube",
+            album: "D Music Player",
+            artwork: [
+                {
+                    src: `https://img.youtube.com/vi/${song.videoId}/hqdefault.jpg`,
+                    sizes: "512x512",
+                    type: "image/jpeg"
+                }
+            ]
+        });
+
+    }
+
     //player.play();
     player.play().catch(() => { });
 
 }
+
+navigator.mediaSession.setActionHandler("play", () => {
+    player.play();
+});
+
+navigator.mediaSession.setActionHandler("pause", () => {
+    player.pause();
+});
+
+navigator.mediaSession.setActionHandler("previoustrack", () => {
+    document.getElementById("prevBtn").click();
+});
+
+navigator.mediaSession.setActionHandler("nexttrack", () => {
+    document.getElementById("nextBtn").click();
+});
 
 document.getElementById("copyPlaylist").onclick = () => {
 
@@ -56,6 +90,22 @@ document.getElementById("copyPlaylist").onclick = () => {
     alert("Playlist copied!");
 
 };
+
+songItem.onclick = () => {
+    playSong(song, index);
+
+    document.getElementById("searchResults").style.display = "none";
+};
+
+document.getElementById("searchInput").addEventListener("focus", () => {
+
+    const results = document.getElementById("searchResults");
+
+    if (results.children.length > 0) {
+        results.style.display = "block";
+    }
+
+});
 
 document.getElementById("pastePlaylist").onclick = async () => {
 
