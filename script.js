@@ -5,7 +5,7 @@ API_KEY = localStorage.getItem("youtubeKey");
 /////////////////////
 backendKey = localStorage.getItem("backendKey");
 
-const BACKEND_URL = "https://dmusicplayer.up.railway.app";
+const BACKEND_URL = "https://dmusicplayerbackend-production.up.railway.app";
 
 youtubeInput.value = localStorage.getItem("youtubeKey") || "";
 backendInput.value = localStorage.getItem("backendKey") || "";
