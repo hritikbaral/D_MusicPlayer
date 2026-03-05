@@ -37,20 +37,13 @@ async function playSong(song, index) {
 
     document.getElementById("nowPlayingText").innerText = song.title;
 
-    // const url =
-    //     `http://localhost:3000/audio?videoId=${song.videoId}&key=${backendKey}`;
+    const url =
+        `${BACKEND_URL}/audio?videoId=${song.videoId}&key=${backendKey}`;
 
-     const url =
-         `${BACKEND_URL}/audio?videoId=${song.videoId}&key=${backendKey}`;
+    player.src = url;
 
-    const res = await fetch(url);
-
-
-    const data = await res.json();
-
-    player.src = data.url;
     player.load();
-    player.play().catch(() => { });
+    player.play().catch(() => {});
 
 }
 
