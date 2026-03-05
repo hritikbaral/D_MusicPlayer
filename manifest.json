@@ -1,0 +1,11 @@
+{
+  "background_color": "#ffffff",
+  "dir": "ltr",
+  "display": "standalone",
+  "name": "D Music",
+  "orientation": "portrait",
+  "scope": "/D_MusicPlayer/",
+  "short_name": "D Music",
+  "start_url": "/D_MusicPlayer/",
+  "theme_color": "#ffffff"
+}
