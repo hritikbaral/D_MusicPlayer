@@ -91,15 +91,10 @@ document.getElementById("copyPlaylist").onclick = () => {
 
 };
 
-songItem.onclick = () => {
-    playSong(song, index);
 
-    document.getElementById("searchResults").style.display = "none";
-};
+document.getElementById("results").addEventListener("focus", () => {
 
-document.getElementById("searchInput").addEventListener("focus", () => {
-
-    const results = document.getElementById("searchResults");
+    const results = document.getElementById("results");
 
     if (results.children.length > 0) {
         results.style.display = "block";
@@ -229,12 +224,19 @@ searchInput.addEventListener("keypress", function (e) {
 
     if (e.key === "Enter") {
 
-        searchYoutube(searchInput.value);
+        searchYoutube(searchInput.value.trim());
 
     }
 
 });
 
+searchInput.addEventListener("focus", () => {
+
+    if (results.children.length > 0) {
+        results.style.display = "block";
+    }
+
+});
 
 async function searchYoutube(query) {
 
@@ -293,7 +295,13 @@ function displayResults(videos) {
         <button class="addBtn">+</button>
         `;
 
-        div.onclick = () => playSong(song, -1);
+        div.onclick = () => {
+
+            playSong(song, -1);
+
+            results.style.display = "none";
+
+        };
 
         div.querySelector(".addBtn").onclick = (e) => {
 
