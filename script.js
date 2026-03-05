@@ -38,12 +38,15 @@ async function playSong(song, index) {
     document.getElementById("nowPlayingText").innerText = song.title;
     console.log("Playing:", song.title);
     const url =
-    `${BACKEND_URL}/audio?videoId=${song.videoId}&key=${backendKey}&t=${Date.now()}`;
+        `${BACKEND_URL}/audio?videoId=${song.videoId}&key=${backendKey}&t=${Date.now()}`;
 
-    player.src = url;
+    const res = await fetch(url);
+    const data = await res.json();
 
+    player.src = data.url;
     player.load();
-    player.play().catch(() => {});
+    //player.play();
+    player.play().catch(() => { });
 
 }
 
