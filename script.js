@@ -65,6 +65,19 @@ async function playSong(song, index) {
 
 }
 
+/////////////////////
+
+document.addEventListener("click", (e) => {
+
+    const results = document.getElementById("results");
+    const searchBox = document.getElementById("search");
+
+    if (!results.contains(e.target) && !searchBox.contains(e.target)) {
+        results.style.display = "none";
+    }
+
+});
+
 navigator.mediaSession.setActionHandler("play", () => {
     player.play();
 });
@@ -81,16 +94,17 @@ navigator.mediaSession.setActionHandler("nexttrack", () => {
     document.getElementById("nextBtn").click();
 });
 
-document.getElementById("copyPlaylist").onclick = () => {
+player.addEventListener("play", () => {
+    if ("mediaSession" in navigator) {
+        navigator.mediaSession.playbackState = "playing";
+    }
+});
 
-    const text = JSON.stringify(playlist, null, 2);
-
-    navigator.clipboard.writeText(text);
-
-    alert("Playlist copied!");
-
-};
-
+player.addEventListener("pause", () => {
+    if ("mediaSession" in navigator) {
+        navigator.mediaSession.playbackState = "paused";
+    }
+});
 
 document.getElementById("results").addEventListener("focus", () => {
 
@@ -101,6 +115,18 @@ document.getElementById("results").addEventListener("focus", () => {
     }
 
 });
+
+//////////////////////////
+
+document.getElementById("copyPlaylist").onclick = () => {
+
+    const text = JSON.stringify(playlist, null, 2);
+
+    navigator.clipboard.writeText(text);
+
+    alert("Playlist copied!");
+
+};
 
 document.getElementById("pastePlaylist").onclick = async () => {
 
