@@ -24,6 +24,11 @@ document.getElementById("saveKeys").onclick = () => {
 
 
 const player = document.getElementById("player");
+
+player.setAttribute("preload", "auto");
+player.setAttribute("playsinline", "");
+player.setAttribute("controls", "true");
+
 let currentIndex = -1;
 let shuffleMode = false;
 let loopMode = false;
@@ -291,7 +296,7 @@ function prevSong() {
 function displayResults(videos) {
 
     results.style.display = "block";
-    
+
     results.innerHTML = "";
 
     videos.forEach(video => {
