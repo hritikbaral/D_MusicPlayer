@@ -1,11 +1,33 @@
 {
-  "background_color": "#ffffff",
-  "dir": "ltr",
-  "display": "standalone",
   "name": "D Music",
-  "orientation": "portrait",
-  "scope": "/D_MusicPlayer/",
   "short_name": "D Music",
+  "description": "Personal Music Player",
+  "id": "/D_MusicPlayer/",
   "start_url": "/D_MusicPlayer/",
-  "theme_color": "#ffffff"
+  "scope": "/D_MusicPlayer/",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "portrait",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "lang": "en",
+  "dir": "ltr",
+  "categories": ["music"],
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "PlayerIcon.png",
+      "sizes": "1024x1024",
+      "type": "image/png"
+    }
+  ]
 }
