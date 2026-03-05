@@ -5,6 +5,7 @@ API_KEY = localStorage.getItem("youtubeKey");
 /////////////////////
 backendKey = localStorage.getItem("backendKey");
 
+const BACKEND_URL = "https://dmusicplayer.up.railway.app";
 
 youtubeInput.value = localStorage.getItem("youtubeKey") || "";
 backendInput.value = localStorage.getItem("backendKey") || "";
@@ -36,8 +37,11 @@ async function playSong(song, index) {
 
     document.getElementById("nowPlayingText").innerText = song.title;
 
-    const url =
-        `http://localhost:3000/audio?videoId=${song.videoId}&key=${backendKey}`;
+    // const url =
+    //     `http://localhost:3000/audio?videoId=${song.videoId}&key=${backendKey}`;
+
+     const url =
+         `${BACKEND_URL}/audio?videoId=${song.videoId}&key=${backendKey}`;
 
     const res = await fetch(url);
 
