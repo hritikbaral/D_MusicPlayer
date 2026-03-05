@@ -86,13 +86,8 @@ navigator.mediaSession.setActionHandler("pause", () => {
     player.pause();
 });
 
-navigator.mediaSession.setActionHandler("previoustrack", () => {
-    document.getElementById("prevBtn").click();
-});
-
-navigator.mediaSession.setActionHandler("nexttrack", () => {
-    document.getElementById("nextBtn").click();
-});
+navigator.mediaSession.setActionHandler("previoustrack", prevSong);
+navigator.mediaSession.setActionHandler("nexttrack", nextSong);
 
 player.addEventListener("play", () => {
     if ("mediaSession" in navigator) {
@@ -159,57 +154,9 @@ document.getElementById("pastePlaylist").onclick = async () => {
 };
 
 
-document.getElementById("nextBtn").onclick = () => {
+document.getElementById("nextBtn").onclick = nextSong;
 
-    if (playlist.length === 0) return;
-
-    if (shuffleMode) {
-
-        const randomIndex = Math.floor(Math.random() * playlist.length);
-
-        playSong(playlist[randomIndex], randomIndex);
-
-    } else {
-
-        currentIndex++;
-
-        if (currentIndex >= playlist.length) {
-
-            currentIndex = 0;
-
-        }
-
-        playSong(playlist[currentIndex], currentIndex);
-
-    }
-
-};
-
-document.getElementById("prevBtn").onclick = () => {
-
-    if (playlist.length === 0) return;
-
-    if (shuffleMode) {
-
-        const randomIndex = Math.floor(Math.random() * playlist.length);
-
-        playSong(playlist[randomIndex], randomIndex);
-
-    } else {
-
-        currentIndex--;
-
-        if (currentIndex < 0) {
-
-            currentIndex = playlist.length - 1;
-
-        }
-
-        playSong(playlist[currentIndex], currentIndex);
-
-    }
-
-};
+document.getElementById("prevBtn").onclick = prevSong;
 
 
 document.getElementById("shuffleToggle").onclick = () => {
@@ -223,19 +170,7 @@ document.getElementById("shuffleToggle").onclick = () => {
 
 
 
-player.onended = () => {
-
-    if (loopMode) {
-
-        playSong(playlist[currentIndex], currentIndex);
-
-        return;
-
-    }
-
-    document.getElementById("nextBtn").click();
-
-};
+player.onended = nextSong;
 
 
 const results = document.getElementById("results");
@@ -292,10 +227,71 @@ async function searchYoutube(query) {
 
 
 
+function nextSong() {
+
+    if (playlist.length === 0) return;
+
+    // LOOP MODE: replay same song
+    if (loopMode) {
+        playSong(playlist[currentIndex], currentIndex);
+        return;
+    }
+
+    if (shuffleMode) {
+
+        const randomIndex = Math.floor(Math.random() * playlist.length);
+        playSong(playlist[randomIndex], randomIndex);
+
+    } else {
+
+        currentIndex++;
+
+        if (currentIndex >= playlist.length) {
+            currentIndex = 0;
+        }
+
+        playSong(playlist[currentIndex], currentIndex);
+
+    }
+
+}
+
+
+function prevSong() {
+
+    if (playlist.length === 0) return;
+
+    // LOOP MODE: replay same song
+    if (loopMode) {
+        playSong(playlist[currentIndex], currentIndex);
+        return;
+    }
+
+    if (shuffleMode) {
+
+        const randomIndex = Math.floor(Math.random() * playlist.length);
+        playSong(playlist[randomIndex], randomIndex);
+
+    } else {
+
+        currentIndex--;
+
+        if (currentIndex < 0) {
+            currentIndex = playlist.length - 1;
+        }
+
+        playSong(playlist[currentIndex], currentIndex);
+
+    }
+
+}
+
 
 
 function displayResults(videos) {
 
+    results.style.display = "block";
+    
     results.innerHTML = "";
 
     videos.forEach(video => {
@@ -442,13 +438,5 @@ document.addEventListener("DOMContentLoaded", () => {
         playSong(playlist[currentIndex], currentIndex);
 
     };
-
-    // document.getElementById("prevBtn").onclick = prevSong;
-
-    // document.getElementById("nextBtn").onclick = nextSong;
-
-    // document.getElementById("shuffleToggle").onclick = toggleShuffle;
-
-    // document.getElementById("loopToggle").onclick = toggleLoop;
 
 });
