@@ -128,9 +128,21 @@ document.getElementById("copyPlaylist").onclick = () => {
 
 };
 
-document.getElementById("pastePlaylist").onclick = async () => {
+document.getElementById("pastePlaylist").onclick = () => {
+    openPlaylistModal();
+};
 
-    const text = prompt("Paste playlist JSON");
+function openPlaylistModal() {
+    document.getElementById("playlistModal").style.display = "flex";
+}
+
+function closePlaylistModal() {
+    document.getElementById("playlistModal").style.display = "none";
+}
+
+function submitPlaylist() {
+
+    const text = document.getElementById("playlistInput").value;
 
     if (!text) return;
 
@@ -150,13 +162,15 @@ document.getElementById("pastePlaylist").onclick = async () => {
 
         renderPlaylist();
 
+        closePlaylistModal();
+
     } catch (err) {
 
         alert("Invalid playlist JSON");
 
     }
 
-};
+}
 
 
 document.getElementById("nextBtn").onclick = nextSong;
@@ -178,10 +192,28 @@ document.getElementById("shuffleToggle").onclick = () => {
 player.onended = nextSong;
 
 
-const results = document.getElementById("results");
-const playlistUI = document.getElementById("playlist");
+let results;
+let playlistUI;
 
-let playlist = JSON.parse(localStorage.getItem("playlist")) || [];
+//let playlist = JSON.parse(localStorage.getItem("playlist")) || [
+let playlist = [
+  {
+    title: "Coolie Disco - #COOLIE",
+    videoId: "ReVGCvWIANA"
+  },
+  {
+    title: "Taylor Swift - Opalite",
+    videoId: "DN0G0Lbj6os"
+  },
+  {
+    title: "Leo - Ordinary Person",
+    videoId: "q6e_b0NERCA"
+  },
+  {
+    title: "THE BANJO BEAT - RICKY DESKTOP",
+    videoId: "htP6wfnjvGk"
+  }
+];
 
 
 const searchInput = document.getElementById("search");
@@ -432,16 +464,9 @@ document.getElementById("playAll").onclick = () => {
 
 document.addEventListener("DOMContentLoaded", () => {
 
+    results = document.getElementById("results");
+    playlistUI = document.getElementById("playlist");
+
     renderPlaylist();
-
-    document.getElementById("playAll").onclick = () => {
-
-        if (playlist.length === 0) return;
-
-        currentIndex = 0;
-
-        playSong(playlist[currentIndex], currentIndex);
-
-    };
 
 });
