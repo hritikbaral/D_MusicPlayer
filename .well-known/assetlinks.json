@@ -3,6 +3,6 @@
       "target": {
         "namespace": "android_app",
         "package_name": "io.github.hritikbaral.twa",
-        "sha256_cert_fingerprints": ["6D:36:7B:79:39:D8:1D:49:18:1C:F7:85:2B:CD:65:63:4C:15:56:88:9D:23:1E:C8:10:CF:65:EF:35:9F:00:E2"]
+        "sha256_cert_fingerprints": ["89:DB:71:B8:8F:BE:4C:DA:20:67:77:22:60:71:C0:8C:81:9B:B1:A5:0E:29:BC:CB:A7:0B:F3:C4:10:93:DD:E2"]
       }
     }]
